@@ -1,0 +1,27 @@
+from django.urls import path, include
+from . import views
+from django.contrib.auth import views as auth_views
+
+
+urlpatterns = [
+    path('', views.admin_panel, name='admin_panel'),  # захищена сторінка
+    path('admin/', views.admin_panel, name='admin_panel'),
+    # path('login/', auth_views.LoginView.as_view(template_name='cms/login.html'), name='login'),
+    # path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('users/', views.user_list, name='user_list'),
+    path('users/<int:user_id>/edit/', views.user_edit, name='user_edit'),
+    path('users/<int:user_id>/delete/', views.user_delete, name='user_delete'),
+    path('ajax/check-nickname/', views.check_nickname, name='check_nickname'),
+    path('stat/', views.statistics, name='statistics'),
+    path('banners/', views.banners, name='banners'),
+    path('films/', views.films, name='films'),
+    path('cinemas/', views.cinemas, name='cinemas'),
+    path('news/', views.news, name='news'),
+    path('shares/', views.shares, name='shares'),
+    path('pages/', views.pages, name='pages'),
+    path('mailing/', views.mailing, name='mailing'),
+]
+
+# path('', views.dashboard, name='dashboard'),
+# path('admin/', views.admin_redirect, name='admin_redirect'),
+# path('admin/login/', views.admin_login, name='admin_login'),

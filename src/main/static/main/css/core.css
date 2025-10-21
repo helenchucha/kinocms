@@ -1,0 +1,77 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-image: url('../img/bg.jpg');
+    background-repeat: repeat;
+    background-size: contain;
+    background-position: top left;
+}
+
+/* Відступи та фон для всього хедера */
+.header-container {
+  padding: 30px 80px 30px 100px;
+  background-color: #ffffff;
+}
+
+/* Гнучка ширина для головного блоку */
+.header-wrapper {
+  width: 100%;
+}
+
+/* Стиль для логотипу */
+.logo {
+  flex: 0 0 auto;
+  padding-right: 20px;
+}
+
+.logo img {
+  height: 80px;
+  width: 120px;
+}
+
+.navbar {
+    width: 100%; /* щоб зайняти всю ширину */
+    border: 2px solid;
+}
+
+.navbar a,
+.navbar span,
+.navbar .dropdown a,
+.navbar .dropdown span {
+    flex: 1; /* рівна ширина */
+    display: flex;
+    justify-content: center; /* по горизонталі по центру */
+    align-items: center; /* по вертикалі по центру, якщо потрібно */
+    padding: 10px 0; /* відступи */
+    text-decoration: none; /* щоб не було підкреслення */
+    transition: all 0.3s ease; /* плавний перехід */
+}
+
+.navbar .dropdown .dropdown-menu span {
+    justify-content: left !important;
+}
+
+.navbar a:hover,
+.navbar span:hover,
+.navbar .dropdown a:hover,
+.navbar .dropdown span:hover {
+    border: 1px solid #000; /* або будь-який колір рамки */
+    /*padding: 8px; /* щоб рамка не зменшувала внутрішній простір */
+}
+
+.search {
+    width: 400px;
+    margin-left: 45px !important;
+}
+
+.search input {
+    width: 400px;
+}
+
+/* Стилі для адаптивності */
+@media(max-width: 768px) {
+  .header-container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
