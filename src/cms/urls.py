@@ -18,7 +18,8 @@ urlpatterns = [
     path('cinemas/', views.cinemas, name='cinemas'),
     path('news/', views.news, name='news'),
     path('shares/', views.shares, name='shares'),
-    path('pages/', views.pages, name='pages'),
+    path('pages/', views.page_list, name='page_list'),
+    path('pages/edit/<int:page_id>/', views.page_edit, name='page_edit'),
     path('mailing/', views.mailing, name='mailing'),
 ]
 

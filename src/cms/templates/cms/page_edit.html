@@ -1,0 +1,149 @@
+{% extends 'cms/admin_base.html' %}
+{% load static %}
+
+{% block content %}
+<!--begin::Form Validation-->
+<div id="page_edit_form" class="card card-info card-outline mb-4">
+    <!--begin::Header-->
+    <div class="card-header"><div class="card-title"></div></div>
+    <!--end::Header-->
+    <!--begin::Form-->
+    <form class="needs-validation" method="post" novalidate>
+        {% csrf_token %}
+        <!--begin::Body-->
+        <div class="card-body edit-form">
+            <!--перша пара рядків з двома полями-->
+            <div class="row g-3">
+                <!-- Title -->
+                <div class="col-md-6">
+                    <label for="title" class="form-label">Название</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="title"
+                            name="title"
+                            value="{{ form.title.value|default:'' }}"
+                            required
+                    />
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card-body edit-form">
+            <!--друга пара рядків з двома полями-->
+            <div class="row g-3">
+                <!-- Description -->
+                <div class="col-md-6">
+                    <label for="description" class="form-label">Описание</label>
+                    <textarea
+                            id="description"
+                            name="description"
+                            required
+                            aria-label="With textarea"
+                            class="form-control">{{ form.description.value|default:'' }}
+                    </textarea>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card-body edit-form">
+            <!--третя пара рядків з двома полями-->
+            <div class="row g-3">
+                <!-- Top banner -->
+                <div class="col-md-6">
+                    <label for="description" class="form-label">Главная картинка</label>
+                    {% if page.top_banner %}
+                    <img src="{{ page.top_banner.url }}" alt="Top Banner" style="width: 150px; height: auto;">
+                    {% else %}
+                    <img src="{% static 'main/img/placeholder.jpg' %}" alt="No image"
+                         style="width: 150px; height: auto;">
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <!--end::Body-->
+        <!--begin::Footer-->
+        <div class="card-footer">
+            <button class="btn btn-info" type="submit">Сохранить</button>
+            <a href="{% url 'page_list' %}" class="btn btn-secondary">Отмена</a>
+        </div>
+        <!--end::Footer-->
+    </form>
+    <!--end::Form-->
+    <!--begin::JavaScript-->
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (() => {
+            'use strict';
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation');
+
+            // Loop over them and prevent submission
+            Array.from(forms).forEach((form) => {
+                form.addEventListener(
+                    'submit',
+                    (event) => {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+
+                        form.classList.add('was-validated');
+                    },
+                    false,
+                );
+            });
+        })();
+    </script>
+    <!--end::JavaScript-->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const nicknameInput = document.getElementById('nickname');
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'invalid-feedback'; // або 'valid-feedback' залежно від статусу
+            nicknameInput.parentNode.appendChild(feedbackDiv);
+
+            let timeout = null;
+
+            nicknameInput.addEventListener('input', function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(function() {
+                    const nickname = nicknameInput.value.trim();
+                    if (nickname.length > 0) {
+                        fetch(`/ajax/check-nickname/?nickname=${encodeURIComponent(nickname)}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.exists) {
+                                    feedbackDiv.textContent = 'Цей псевдонім вже зайнятий.';
+                                    nicknameInput.classList.add('is-invalid');
+                                    nicknameInput.classList.remove('is-valid');
+                                } else {
+                                    feedbackDiv.textContent = '';
+                                    nicknameInput.classList.remove('is-invalid');
+                                    nicknameInput.classList.add('is-valid');
+                                }
+                            });
+                    } else {
+                        // Якщо поле порожнє, можна очистити повідомлення
+                        feedbackDiv.textContent = '';
+                        nicknameInput.classList.remove('is-invalid', 'is-valid');
+                    }
+                    }, 500); // затримка для зменшення кількості запитів
+                });
+        });
+    </script>
+
+</div>
+<!--end::Form Validation-->
+
+{% endblock %}

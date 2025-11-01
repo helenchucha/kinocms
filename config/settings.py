@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
-
 from pathlib import Path
+import base64
+from cryptography.fernet import Fernet
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,6 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure--8aiw0lhko@ee=s9ecc2xzdptytd_-qj7r!)9an5*wf5)89t7j'
+
+SECURED_FIELDS_KEY = 'XrkdDS_U8fGEElU4_sPoGsxWmF-o5_FAuJAL8mdjPdE='
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -45,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
 
     # django-allauth та його залежності
     'django.contrib.sites',  # обов'язково для allauth
@@ -99,7 +104,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        # 'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'kinocms',          # назва бази даних
         'USER': 'admin',        # ім'я користувача
         'PASSWORD': 'admin',    # пароль користувача
@@ -162,12 +168,18 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Налаштування для allauth
-# ACCOUNT_AUTHENTICATION_METHOD = 'username'  # або 'email' або 'username_email'
+ACCOUNT_AUTHENTICATION_METHOD = 'email'  # або 'email' або 'username_email'
 ACCOUNT_LOGIN_METHODS = {'username'}
-# ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # або 'optional', 'none'
 # ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 LOGIN_REDIRECT_URL = '/'  # URL після входу
 LOGOUT_REDIRECT_URL = '/login/' # URL після виходу
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'  # URL після виходу
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+GDAL_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/libgdal.so'
+PROJ_LIB = "/usr/share/proj"               # шлях до PROJ

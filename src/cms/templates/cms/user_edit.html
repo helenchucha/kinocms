@@ -259,7 +259,7 @@
                             class="form-control"
                             id="card"
                             name="card"
-                            value="{{ form.card.value|default:'' }}"
+                            value="{{ user.get_masked_card }}"
                             placeholder="Введите номер карты"
                             required
                     />

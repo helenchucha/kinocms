@@ -1243,6 +1243,11 @@ progress {
   width: 50% !important;
 }
 
+#page_edit_form div.col-md-6 {
+  width: 100% !important;
+}
+
+
   .col-md-7 {
     flex: 0 0 auto;
     width: 58.33333333%;

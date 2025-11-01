@@ -1,15 +1,20 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from user.models import User
+from cms.models import HmPage, Pages
+
+
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.urls import reverse
 from .user_edit_form import UserEditForm
+from .page_edit_form import HmPageForm, PagesForm, PageEditForm
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 from .cities import CITIES
+import pprint
 
 # def dashboard(request):
 #    return render(request, 'admin_base.html')
@@ -91,6 +96,7 @@ def cinemas(request):
         'page_title': 'Кинотеатры',
     })
 
+
 def news(request):
     return render(request, 'cms/news.html', {
         'active_page': 'news',
@@ -108,6 +114,80 @@ def pages(request):
         'active_page': 'pages',
         'page_title': 'Страницы',
     })
+
+def page_list(request):
+    # Отримати головну сторінку (вона одна)
+    main_page = HmPage.objects.first()
+
+    # Формуємо словник для головної сторінки у форматі, схожому на pages_list
+    main_page_info = {
+        'type': 'main_page',
+        'object': main_page,
+        'title': main_page.title,
+        'creation_date': main_page.creation_date,
+        'status': 'ВКЛ' if main_page.status else 'ВИКЛ',
+    }
+
+    # Отримати всі інші сторінки
+    other_pages_qs = Pages.objects.all()
+
+    # Пагінація для інших сторінок
+    paginator = Paginator(other_pages_qs, 10)  # 10 на сторінку
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Формуємо список для інших сторінок
+    pages_list = []
+    for page in page_obj.object_list:
+        pages_list.append({
+            'type': 'pages',
+            'object': page,
+            'title': page.title,
+            'creation_date': page.creation_date,
+            'status': 'ВКЛ' if page.status else 'ВИКЛ',
+            'can_delete': not page.default,  # якщо default = True, то видаляти не можна
+        })
+
+    return render(request, 'cms/pages.html', {
+        'main_page': main_page_info,
+        'pages': pages_list,
+        'page_obj': page_obj,
+        'active_page': 'pages',
+        'page_title': 'Страницы',
+    })
+
+
+def page_edit(request, page_id):
+    # Спершу намагаємось знайти у HmPage
+    try:
+        page_instance = HmPage.objects.get(id=page_id)
+        is_main_page = True
+    except HmPage.DoesNotExist:
+        # Якщо не знайдено, шукаємо у Pages
+        page_instance = get_object_or_404(Pages, id=page_id)
+        is_main_page = False
+
+    # Вибираємо форму залежно від типу сторінки
+    if is_main_page:
+        PageEditForm = HmPageForm
+        template_name = 'cms/hmpage_edit.html'
+    else:
+        PageEditForm = PagesForm
+        template_name = 'cms/page_edit.html'
+
+    if request.method == 'POST':
+        form = PageEditForm(request.POST, instance=page_instance)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Страница успішно оновлена.')
+            return redirect('page_list')  # переконайтеся, що цей URL існує
+        else:
+            print("Помилка у формі:", form.errors)
+    else:
+        form = PageEditForm(instance=page_instance)
+
+    return render(request, template_name, {'form': form, 'page': page_instance})
+
 
 def mailing(request):
     return render(request, 'cms/mailing.html', {

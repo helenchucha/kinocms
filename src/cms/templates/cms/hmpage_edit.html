@@ -1,0 +1,132 @@
+{% extends 'cms/admin_base.html' %}
+
+{% block content %}
+<!--begin::Form Validation-->
+<div class="card card-info card-outline mb-4">
+    <!--begin::Header-->
+    <div class="card-header"><div class="card-title"></div></div>
+    <!--end::Header-->
+    <!--begin::Form-->
+    <form class="needs-validation" method="post" novalidate>
+        {% csrf_token %}
+        <!--begin::Body-->
+        <div class="card-body edit-form">
+            <!--перша пара рядків з двома полями-->
+            <div class="row g-3">
+                <!-- Phone1 -->
+                <div class="col-md-6">
+                    <label for="phone1" class="form-label">Телефон 1</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="phone1"
+                            name="phone1"
+                            value="{{ form.phone1.value|default:'' }}"
+                            required
+                    />
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card-body edit-form">
+            <!--друга пара рядків з двома полями-->
+            <div class="row g-3">
+                <!-- Phone2 -->
+                <div class="col-md-6">
+                    <label for="phone2" class="form-label">Телефон 2</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="phone2"
+                            name="phone2"
+                            value="{{ form.phone2.value|default:'' }}"
+                            required
+                    />
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <!--end::Body-->
+        <!--begin::Footer-->
+        <div class="card-footer">
+            <button class="btn btn-info" type="submit">Сохранить</button>
+            <a href="{% url 'page_list' %}" class="btn btn-secondary">Отмена</a>
+        </div>
+        <!--end::Footer-->
+    </form>
+    <!--end::Form-->
+    <!--begin::JavaScript-->
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (() => {
+            'use strict';
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation');
+
+            // Loop over them and prevent submission
+            Array.from(forms).forEach((form) => {
+                form.addEventListener(
+                    'submit',
+                    (event) => {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+
+                        form.classList.add('was-validated');
+                    },
+                    false,
+                );
+            });
+        })();
+    </script>
+    <!--end::JavaScript-->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const nicknameInput = document.getElementById('nickname');
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'invalid-feedback'; // або 'valid-feedback' залежно від статусу
+            nicknameInput.parentNode.appendChild(feedbackDiv);
+
+            let timeout = null;
+
+            nicknameInput.addEventListener('input', function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(function() {
+                    const nickname = nicknameInput.value.trim();
+                    if (nickname.length > 0) {
+                        fetch(`/ajax/check-nickname/?nickname=${encodeURIComponent(nickname)}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.exists) {
+                                    feedbackDiv.textContent = 'Цей псевдонім вже зайнятий.';
+                                    nicknameInput.classList.add('is-invalid');
+                                    nicknameInput.classList.remove('is-valid');
+                                } else {
+                                    feedbackDiv.textContent = '';
+                                    nicknameInput.classList.remove('is-invalid');
+                                    nicknameInput.classList.add('is-valid');
+                                }
+                            });
+                    } else {
+                        // Якщо поле порожнє, можна очистити повідомлення
+                        feedbackDiv.textContent = '';
+                        nicknameInput.classList.remove('is-invalid', 'is-valid');
+                    }
+                    }, 500); // затримка для зменшення кількості запитів
+                });
+        });
+    </script>
+
+</div>
+<!--end::Form Validation-->
+
+{% endblock %}

@@ -68,6 +68,16 @@ body {
     width: 400px;
 }
 
+li.nav-item.dropdown.user-menu::marker {
+  content: "";
+  display: none;
+}
+
+li.nav-item.dropdown.user-menu {
+  list-style: none !important;
+}
+
+
 /* Стилі для адаптивності */
 @media(max-width: 768px) {
   .header-container {

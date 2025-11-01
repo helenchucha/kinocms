@@ -48,3 +48,9 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.nickname})"
+
+    def get_masked_card(self):
+        if self.card:
+            # Виводимо зірочки та останні 4 цифри
+            return '**** **** **** ' + self.card[-4:]
+        return ''
