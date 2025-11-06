@@ -14,7 +14,6 @@ from pathlib import Path
 import base64
 from cryptography.fernet import Fernet
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -31,8 +30,7 @@ SECURED_FIELDS_KEY = 'XrkdDS_U8fGEElU4_sPoGsxWmF-o5_FAuJAL8mdjPdE='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -40,7 +38,7 @@ INSTALLED_APPS = [
     'main',
     'user',
     'cms',
-    'authentication',
+    'src.authentication',
     'secured_fields',
     'phonenumber_field',
     'django.contrib.admin',
@@ -83,13 +81,13 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'main.context_processors.phones',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -106,14 +104,13 @@ DATABASES = {
     'default': {
         # 'ENGINE': 'django.db.backends.postgresql',
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'kinocms',          # назва бази даних
-        'USER': 'admin',        # ім'я користувача
-        'PASSWORD': 'admin',    # пароль користувача
-        'HOST': 'localhost',            # або IP-адреса сервера бази даних
-        'PORT': '5432',                 # порт PostgreSQL (за замовчуванням 5432)
+        'NAME': 'kinocms',  # назва бази даних
+        'USER': 'admin',  # ім'я користувача
+        'PASSWORD': 'admin',  # пароль користувача
+        'HOST': 'localhost',  # або IP-адреса сервера бази даних
+        'PORT': '5432',  # порт PostgreSQL (за замовчуванням 5432)
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -133,7 +130,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -145,13 +141,12 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    str(BASE_DIR / 'src/cms'), # шлях до папки cms
+    str(BASE_DIR / 'src/cms'),  # шлях до папки cms
 ]
 
 # Default primary key field type
@@ -160,7 +155,7 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user.User'
-LOGIN_URL = '/accounts/login/'
+LOGIN_URL = '/login/'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # стандартний бекенд
@@ -175,11 +170,11 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # або 'optional', 'none'
 # ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 LOGIN_REDIRECT_URL = '/'  # URL після входу
-LOGOUT_REDIRECT_URL = '/login/' # URL після виходу
+LOGOUT_REDIRECT_URL = '/login/'  # URL після виходу
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'  # URL після виходу
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 GDAL_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/libgdal.so'
-PROJ_LIB = "/usr/share/proj"               # шлях до PROJ
+PROJ_LIB = "/usr/share/proj"  # шлях до PROJ

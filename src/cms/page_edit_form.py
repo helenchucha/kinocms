@@ -10,7 +10,7 @@ class HmPageForm(forms.ModelForm):
 class PagesForm(forms.ModelForm):
     class Meta:
         model = Pages
-        fields = ['title', 'description', 'top_banner', 'status', 'default', 'template_name']
+        fields = ['title', 'description', 'top_banner', 'status', 'is_default', 'template_name']
         # додайте потрібні поля
 
 class PageEditForm(forms.ModelForm):
@@ -30,7 +30,7 @@ class PageEditForm(forms.ModelForm):
         elif model_type == 'page':
             self.Meta.model = Pages
             self.Meta.fields = [
-                'title', 'description', 'top_banner', 'status', 'default', 'template_name'
+                'title', 'description', 'top_banner', 'status', 'is_default', 'template_name'
             ]
         else:
             raise ValueError("Unknown model_type. Використовуйте 'hm_page' або 'page'.")

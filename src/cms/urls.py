@@ -1,13 +1,13 @@
 from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
-
+from django.contrib.admin.views.decorators import staff_member_required
 
 urlpatterns = [
-    path('', views.admin_panel, name='admin_panel'),  # захищена сторінка
-    path('admin/', views.admin_panel, name='admin_panel'),
-    # path('login/', auth_views.LoginView.as_view(template_name='cms/login.html'), name='login'),
-    # path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+     path('', views.admin_panel, name='admin_panel'),  # тут викликається `admin_panel`, вже захищена декоратором
+     path('admin/', views.admin_panel, name='admin_panel'),
+    #path('', staff_member_required(views.admin_panel), name='admin_panel'),
+    #path('admin/', staff_member_required(views.admin_panel), name='admin_panel'),
     path('users/', views.user_list, name='user_list'),
     path('users/<int:user_id>/edit/', views.user_edit, name='user_edit'),
     path('users/<int:user_id>/delete/', views.user_delete, name='user_delete'),

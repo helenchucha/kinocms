@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render
+from django.http import HttpResponseForbidden
 
 def login_view(request):
     if request.method == 'POST':
@@ -28,3 +30,7 @@ def register_view(request):
     else:
         form = UserCreationForm()
     return render(request, 'authentication/register.html', {'form': form})
+
+def custom_permission_denied_view(request, exception=None):
+    print(f'request: {request}')
+    return render(request, '403.html', status=403)

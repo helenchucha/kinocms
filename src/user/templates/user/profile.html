@@ -1,11 +1,355 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>Мій профіль</h1>
-<p>Тут буде інформація про користувача.</p>
-</body>
-</html>
+{% extends 'main/layout.html' %}
+
+{% block title %}Про нас{% endblock %}
+
+
+{% block content %}
+
+<!--begin::Form Validation-->
+<div class="main-content card card-info card-outline mb-4">
+    <!--begin::Header-->
+    <div class="card-header"><div class="card-title"></div></div>
+    <!--end::Header-->
+    <!--begin::Form-->
+    <form class="needs-validation" method="post" novalidate>
+        {% csrf_token %}
+        <!--begin::Body-->
+        <div class="card-body edit-form">
+            <!--перша пара рядків з двома полями-->
+            <div class="row g-3">
+                <!-- First name -->
+                <div class="col-md-6">
+                    <label for="first_name" class="form-label">Имя</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="first_name"
+                            name="first_name"
+                            value="{{ form.first_name.value|default:'' }}"
+                            required
+                    />
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+
+                <!-- Language -->
+                <fieldset class="col-md-6 d-flex align-items-center">
+                        <legend class="col-form-label col-sm-2 pt-0">Язык</legend>
+                        <div class="d-flex align-items-center">
+                          <div class="form-check me-3">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="language"
+                              id="language_ru"
+                              value="RU"
+                              {% if form.language.value == "RU" %}checked{% endif %}
+                            />
+                            <label class="form-check-label" for="language_ru"> Русский </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="language"
+                              id="language_uk"
+                              value="UK"
+                              {% if form.language.value == "UK" %}checked{% endif %}
+                            />
+                            <label class="form-check-label" for="language_uk"> Украинский </label>
+                          </div>
+                        </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="card-body edit-form">
+            <!--друга пара рядків з двома полями-->
+            <div class="row g-3">
+                <!-- Last name -->
+                <div class="col-md-6">
+                    <label for="last_name" class="form-label">Фамилия</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="last_name"
+                            name="last_name"
+                            value="{{ form.last_name.value|default:'' }}"
+                            required
+                    />
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+
+                <!-- Gender -->
+                <fieldset class="col-md-6 d-flex align-items-center">
+                        <legend class="col-form-label col-sm-2 pt-0">Пол</legend>
+                        <div class="d-flex align-items-center">
+                          <div class="form-check me-3">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="gender"
+                              id="gender_male"
+                              value="M"
+                              {% if form.gender.value == "M" %}checked{% endif %}
+                            />
+                            <label class="form-check-label" for="gender_male"> Мужчина </label>
+                          </div>
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="gender"
+                              id="gender_famale"
+                              value="F"
+                              {% if form.gender.value == "F" %}checked{% endif %}
+                            />
+                            <label class="form-check-label" for="gender_famale"> Женщина </label>
+                          </div>
+                        </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="card-body edit-form">
+            <!--третя пара рядків з двома полями-->
+            <div class="row g-3">
+                <!-- Nickname -->
+<!--                <label for="nickname" class="form-label">Псевдоним</label>-->
+                <div class="col-md-6 has-validation">
+                    <label for="last_name" class="form-label">Псевдоним</label>
+<!--                    <span class="input-group-text" id="inputGroupPrepend">@</span>-->
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="nickname"
+                            name="nickname"
+                            value="{{ form.nickname.value|default:'' }}"
+                            aria-describedby="inputGroupPrepend"
+                            required
+                    />
+                    <div class="valid-feedback">Looks good!</div>
+<!--                    <div class="invalid-feedback">Please choose a username.</div>-->
+                </div>
+
+                <!-- Phone -->
+                <div class="col-md-6">
+                    <label for="phone" class="form-label">Телефон</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="phone"
+                            name="phone"
+                            value="{{ form.phone.value|default:'' }}"
+                            required
+                    />
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body edit-form">
+            <!--четверта пара рядків з двома полями-->
+            <div class="row g-3">
+                <!-- Email -->
+                <div class="col-md-6">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            name="email"
+                            value="{{ form.email.value|default:'' }}"
+                            aria-describedby="emailHelp"
+                    />
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+
+                <!-- Дата рождения -->
+                <div class="col-md-6">
+                    <label for="birth_date" class="form-label">Дата рождения</label>
+                    <input
+                            type="date"
+                            class="form-control"
+                            id="birth_date"
+                            name="birth_date"
+                            value="{{ form.birth_date.value|default:user.birth_date|date:'Y-m-d' }}"
+                            required
+                    />
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card-body edit-form">
+            <!--п'ята пара рядків з двома полями-->
+            <div class="row g-3">
+                <!-- Адреса -->
+                <div class="col-md-6">
+                    <label for="address" class="form-label">Адрес</label>
+                    <input
+                            type="address"
+                            class="form-control"
+                            id="address"
+                            name="address"
+                            value="{{ form.address.value|default:'' }}"
+                            required
+                    />
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+
+                <!-- Город -->
+                <div class="col-md-6">
+                    <label for="city" class="form-label">Город</label>
+                    <select
+                            class="form-select"
+                            id="city"
+                            name="city"
+                            required
+                    >
+                        <option value="">Виберите город</option>
+                        {% for city in cities %}
+                        <option value="{{ city }}" {% if form.city.value == city %}selected{% endif %}>
+                            {{ city }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Шоста пара рядків з двома полями -->
+        <div class="card-body edit-form">
+            <div class="row g-3">
+            <!-- Пароль -->
+                <div class="col-md-6">
+                    <label for="password" class="form-label">Пароль</label>
+                    <input
+                            type="password"
+                            class="form-control"
+                            id="password"
+                            name="password"
+                            value="{{ form.password.value|default:'' }}"
+                            required
+                    />
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+
+                <!-- Повторити пароль -->
+                <div class="col-md-6">
+                    <label for="password_confirm" class="form-label">Повторити пароль</label>
+                    <input
+                            type="password"
+                            class="form-control"
+                            id="password_confirm"
+                            name="password_confirm"
+                            value="{{ form.password_confirm.value|default:'' }}"
+                            required
+                    />
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Сьома пара рядків з двома полями -->
+        <div class="card-body edit-form">
+            <div class="row g-3">
+            <!-- Номер карти -->
+                <div class="col-md-6">
+                    <label for="card" class="form-label">Номер карты</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="card"
+                            name="card"
+                            value="{{ user.get_masked_card }}"
+                            placeholder="Введите номер карты"
+                            required
+                    />
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!--end::Body-->
+        <!--begin::Footer-->
+        <div class="card-footer">
+            <button class="btn btn-info" type="submit">Сохранить</button>
+            <a href="{% url 'user_list' %}" class="btn btn-secondary">Отмена</a>
+        </div>
+        <!--end::Footer-->
+    </form>
+    <!--end::Form-->
+    <!--begin::JavaScript-->
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (() => {
+            'use strict';
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation');
+
+            // Loop over them and prevent submission
+            Array.from(forms).forEach((form) => {
+                form.addEventListener(
+                    'submit',
+                    (event) => {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+
+                        form.classList.add('was-validated');
+                    },
+                    false,
+                );
+            });
+        })();
+    </script>
+    <!--end::JavaScript-->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const nicknameInput = document.getElementById('nickname');
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'invalid-feedback'; // або 'valid-feedback' залежно від статусу
+            nicknameInput.parentNode.appendChild(feedbackDiv);
+
+            let timeout = null;
+
+            nicknameInput.addEventListener('input', function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(function() {
+                    const nickname = nicknameInput.value.trim();
+                    if (nickname.length > 0) {
+                        fetch(`/ajax/check-nickname/?nickname=${encodeURIComponent(nickname)}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.exists) {
+                                    feedbackDiv.textContent = 'Цей псевдонім вже зайнятий.';
+                                    nicknameInput.classList.add('is-invalid');
+                                    nicknameInput.classList.remove('is-valid');
+                                } else {
+                                    feedbackDiv.textContent = '';
+                                    nicknameInput.classList.remove('is-invalid');
+                                    nicknameInput.classList.add('is-valid');
+                                }
+                            });
+                    } else {
+                        // Якщо поле порожнє, можна очистити повідомлення
+                        feedbackDiv.textContent = '';
+                        nicknameInput.classList.remove('is-invalid', 'is-valid');
+                    }
+                    }, 500); // затримка для зменшення кількості запитів
+                });
+        });
+    </script>
+
+</div>
+<!--end::Form Validation-->
+
+
+{% endblock %}

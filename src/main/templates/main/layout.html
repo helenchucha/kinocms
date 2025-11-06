@@ -75,9 +75,19 @@
     <a href="{% url 'profile' %}" class="btn btn-sm btn-primary ms-3">
         Личный кабинет
     </a>
-    <a href="{% url 'logout' %}" class="btn btn-sm btn-danger ms-2 d-flex align-items-center">
-        Выйти &nbsp;<i class="bi bi-escape"></i>
+    {% if user.is_staff %}
+    <a href="{% url 'admin_panel' %}" class="btn btn-sm btn-primary ms-3">
+        Админ панель
     </a>
+    {% endif %}
+    <!-- Форма для виходу -->
+    <form method="post" action="{% url 'logout' %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-danger ms-2 d-flex align-items-center"
+                style="border:none; background:#dc3545; padding:4px 8px; cursor:pointer;">
+            Выйти &nbsp;<i class="bi bi-escape"></i>
+        </button>
+    </form>
     {% else %}
     <!-- Кнопки для гостей -->
     <a href="{% url 'login' %}" class="btn btn-sm btn-success ms-3">Логин</a>
@@ -85,78 +95,155 @@
     {% endif %}
 </div>
 
-    <header class="header-container">
-        <div class="header-wrapper d-flex align-items-center justify-content-between px-3">
-            <!-- Логотип -->
-            <div class="logo">
-                <a href="/"><img src="{% static 'main/img/logo.jpg' %}" alt="Logo"></a>
-            </div>
+<!-- Банер -->
+<div class="banner-top">
+    <img src="{% static 'main/img/bn2.jpg' %}" alt="Банер" class="img-fluid w-100"/>
+    <div class="banner-text">
+        Покупайте электронные билеты и обходите очереди на кассах!<br/>
+        ОТПРАВЛЯЙТЕСЬ СРАЗУ В ЗАЛ!
+    </div>
+</div>
 
-            <!-- Другий блок: Верхній і Нижній -->
-            <div class="header-main flex-fill ms-3">
-                <!-- Верхній підблок -->
-                <div class="top-row d-flex justify-content-between mb-2">
-                    <!-- Пошук -->
-                    <div class="search flex-fill mx-2">
-                        <input type="text" class="form-control" placeholder="Поиск..." />
-                    </div>
-                    <!-- Соцмережі -->
-                    <div class="socials mx-2">
-                        <a href="#">FB</a> | <a href="#">TW</a> | <a href="#">IG</a>
-                    </div>
-                    <!-- Телефони -->
-                    <div class="phones mx-2">
-                        <a href="tel:123456789">123-45-67</a>
-                    </div>
-                </div>
-
-                <!-- Нижній підблок -->
-                <div class="bottom-row d-flex justify-content-between align-items-center">
-                    <!-- Меню -->
-                    <nav class="navbar navbar-expand-sm p-0">
-                        {% for item in menu_items %}
-                        {% if item.children %}
-                        <!-- Пункт з підменю -->
-                        <div class="dropdown">
-                            <a class="nav-link dropdown-toggle" href="{% if item.url_name %} {% url item.url_name %} {% endif %}" id="dropdown{{ forloop.counter }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                {{ item.name }}
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="dropdown{{ forloop.counter }}">
-                                {% for child in item.children %}
-                                {% if child.url_name %}
-                                <li><a class="dropdown-item" href="{% url child.url_name %}">{{ child.name }}</a></li>
-                                {% else %}
-                                <li><span class="dropdown-item">{{ child.name }}</span></li>
-                                {% endif %}
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        {% else %}
-                        <!-- Без підменю -->
-                        {% if item.url_name %}
-                        <a class="nav-link" href="{% url item.url_name %}">{{ item.name }}</a>
-                        {% else %}
-                        <span>{{ item.name }}</span>
-                        {% endif %}
-                        {% endif %}
-                        {% endfor %}
-                    </nav>
-
-                    <!-- Зміна мови -->
-                    <div class="language ms-3">
-                        <select class="form-select form-select-sm w-auto">
-                            <option selected>Рус</option>
-                            <option value="uk">Укр</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+<header class="header-container">
+    <div class="header-wrapper d-flex align-items-center justify-content-between px-3">
+        <!-- Логотип -->
+        <div class="logo">
+            <a href="/"><img src="{% static 'main/img/logo.jpg' %}" alt="Logo"></a>
         </div>
-    </header>
-    <main>
+
+        <!-- Другий блок: Верхній і Нижній -->
+        <div class="header-main flex-fill ms-3">
+            <!-- Верхній підблок -->
+            <div class="top-row d-flex justify-content-between align-items-center mb-2">
+                <!-- Пошук -->
+                <div class="search flex-fill mx-2">
+                    <input type="text" class="form-control" placeholder="Поиск..."/>
+                </div>
+                <!-- Соцмережі -->
+                <div class="socials mx-2">
+                    <a href="#"><i class="bi bi-facebook fs-3 me-2"></i></a>  <a href="#"><i class="bi bi-twitter fs-3 me-2"></i></a>  <a href="#"><i class="bi bi-instagram fs-3 me-2"></i></a>
+                </div>
+                <!-- Телефони -->
+                <div class="phones mx-2">
+                    {% if phone1 %}
+                    <a href="tel:{{ phone1 }}" class="phone-link">{{ phone1 }}</a>
+                    {% endif %}
+                    {% if phone2 %}
+                    <a href="tel:{{ phone2 }}" class="phone-link">{{ phone2 }}</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Нижній підблок -->
+            <div class="bottom-row d-flex justify-content-between align-items-center">
+                <!-- Меню -->
+                <nav class="navbar navbar-expand-sm p-0">
+                    {% for item in menu_items %}
+                    {% if item.children.all %}
+                    <!-- Пункт з підменю -->
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle"
+                           href="{% if item.url_name %}{% url item.url_name %}{% endif %}"
+                           id="dropdown{{ forloop.counter }}" data-bs-toggle="dropdown" aria-expanded="false"
+                           style="cursor: pointer;">
+                            {{ item.name }}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdown{{ forloop.counter }}">
+                            {% for child in item.children.all %}
+                            {% if child.url_name %}
+                            <li><a class="dropdown-item" href="{% url child.url_name %}">{{ child.title }}</a></li>
+                            {% else %}
+                            <li><span class="dropdown-item">{{ child.title }}</span></li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% else %}
+                    <!-- Без підменю -->
+                    {% if item.url_name %}
+                    <a class="nav-link" href="{% if item.url_name %}{% url item.url_name %}{% endif %}" style="cursor: {% if item.url_name %}pointer{% else %}not-allowed{% endif %};">{{ item.name }}</a>
+                    {% else %}
+                    <span style="cursor: pointer;">{{ item.name }}</span>
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </nav>
+
+                <!-- Зміна мови -->
+                <div class="language ms-3">
+                    <select class="form-select form-select-sm w-auto">
+                        <option selected>Рус</option>
+                        <option value="uk">Укр</option>
+                    </select>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</header>
+<main>
+    <div class="content-container">
         {% block content %}
+
         {% endblock %}
-    </main>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer bg-light py-4 mt-4">
+  <div class="container d-flex justify-content-between flex-wrap">
+
+    <!-- Блок 1: Мобильные приложения -->
+    <div class="footer-block mb-3" style="min-width:200px;">
+      <h5>Мобильные приложения</h5>
+      <ul class="list-unstyled">
+        <li><a href="#">Android</a></li>
+        <li><a href="#">iOS</a></li>
+        <li><a href="#">Windows</a></li>
+      </ul>
+    </div>
+
+    <!-- Блок 2: Пункты меню (окрім "О кинотеатре") -->
+    <div class="footer-block mb-3" style="min-width:200px;">
+      <ul class="list-unstyled">
+        {% for item in menu_items %}
+          {% if item.name != "О кинотеатре" %}
+            <li>
+              {% if item.url_name %}
+                <a href="{% url item.url_name %}">{{ item.name }}</a>
+              {% else %}
+                <span>{{ item.name }}</span>
+              {% endif %}
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Блок 3: "О кинотеатре" -->
+    <div class="footer-block mb-3" style="min-width:200px;">
+      <h5>О кинотеатре</h5>
+    </div>
+
+    <!-- Блок 4: Иконки соцсетей -->
+    <div class="footer-block mb-3 d-flex flex-column align-items-center" style="min-width:200px;">
+      <div class="social-icons d-flex gap-3">
+        <a href="#" class="text-dark"><i class="bi bi-facebook fs-4"></i></a>
+        <a href="#" class="text-dark"><i class="bi bi-twitter fs-4"></i></a>
+        <a href="#" class="text-dark"><i class="bi bi-instagram fs-4"></i></a>
+        <a href="#" class="text-dark"><i class="bi bi-telegram fs-4"></i></a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<div class="bottom-line bg-light text-center py-2">
+  @KinoCMS 2025
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

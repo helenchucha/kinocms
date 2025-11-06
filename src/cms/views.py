@@ -1,27 +1,25 @@
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth import authenticate, login
-from django.shortcuts import get_object_or_404, render
+from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import render
 from user.models import User
 from cms.models import HmPage, Pages
-
 
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.urls import reverse
 from .user_edit_form import UserEditForm
-from .page_edit_form import HmPageForm, PagesForm, PageEditForm
+from .page_edit_form import HmPageForm, PagesForm
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 from .cities import CITIES
-import pprint
+from .decorators import staff_required
 
-# def dashboard(request):
-#    return render(request, 'admin_base.html')
 
+@staff_required
 def admin_panel(request):
     return render(request, 'cms/admin_base.html')
 
+@staff_required
 def user_list(request):
     user_list = User.objects.all().order_by('id')
     paginator = Paginator(user_list, 10)
@@ -145,7 +143,7 @@ def page_list(request):
             'title': page.title,
             'creation_date': page.creation_date,
             'status': 'ВКЛ' if page.status else 'ВИКЛ',
-            'can_delete': not page.default,  # якщо default = True, то видаляти не можна
+            'can_delete': not page.is_default,  # якщо default = True, то видаляти не можна
         })
 
     return render(request, 'cms/pages.html', {
@@ -194,3 +192,7 @@ def mailing(request):
         'active_page': 'mailing',
         'page_title': 'Рассылка',
     })
+
+# @staff_required_or_permission_denied
+# def some_admin_only_view(request):
+#     return render(request, 'admin_only.html')

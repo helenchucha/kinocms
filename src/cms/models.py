@@ -27,7 +27,7 @@ class Pages(models.Model):
     top_banner = models.ImageField(upload_to='main/', blank=True, null=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     status = models.BooleanField(choices=STATUS_CHOICES, default=False)
-    default = models.BooleanField(default=False)
+    is_default = models.BooleanField(default=False)
 
     # Поле для прив'язки до шаблону
     template_name = models.CharField(
@@ -76,3 +76,11 @@ class Cinema(models.Model):
             except ValueError:
                 return None
         return None
+
+
+class BnBg(models.Model):
+    foto_bg = models.ImageField(upload_to='main/', blank=True, null=True)
+    simple_bg = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"Background {self.id} - {'Simple' if self.simple_bg else 'Photo'}"

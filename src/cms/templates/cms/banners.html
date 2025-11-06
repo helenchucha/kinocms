@@ -1,5 +1,86 @@
 {% extends 'cms/admin_base.html' %}
+{% load static %}
 
 {% block content %}
+
+<!--begin::Form Validation-->
+<div id="page_edit_form" class="card card-info card-outline mb-4">
+    <!--begin::Header-->
+    <div class="card-header"><div class="card-title"></div></div>
+    <!--end::Header-->
+    <!--begin::Form-->
+    <form class="needs-validation" method="post" novalidate>
+        {% csrf_token %}
+        <!--begin::Body-->
+        <div class="card-header"><h3 class="card-title">Сквозной баннер на заднем фоне</h3></div>
+        <div class="card-body edit-form">
+            <!--перша пара рядків з двома полями-->
+            <p>Размер: 2000х3000 </p>
+
+            <!-- Контейнер для двох блоків -->
+            <div class="row g-3 mb-4">
+                <!-- Перший блок: перемикач -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="background_type"
+                                   id="background_type_photo" value="photo" checked>
+                            <label class="form-check-label" for="background_type_photo">Фото на фон</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="background_type"
+                                   id="background_type_simple" value="simple">
+                            <label class="form-check-label" for="background_type_simple">Просто фон</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Другий блок: картинка + кнопки -->
+                <div class="col-md-6 d-flex flex-column align-items-center" id="imageBlock">
+                    <div class="mb-2">
+                        {% if page.top_banner %}
+                        <img src="{{ page.top_banner.url }}" alt="Top Banner" style="width: 150px; height: auto;">
+                        {% else %}
+                        <img src="{% static 'main/img/placeholder.jpg' %}" alt="No image"
+                             style="width: 150px; height: auto;">
+                        {% endif %}
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-primary btn-sm me-2">Добавить</button>
+                        <button type="button" class="btn btn-danger btn-sm">Удалить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end::Body-->
+    </form>
+    <!--end::Form-->
+</div>
+
+<!-- JavaScript перенесено сюди, щоб виконувалося після завантаження DOM -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const photoRadio = document.getElementById('background_type_photo');
+    const simpleRadio = document.getElementById('background_type_simple');
+    const imageBlock = document.getElementById('imageBlock');
+
+    function toggleImageBlock() {
+        if (photoRadio.checked) {
+            imageBlock.style.display = 'flex'; // або 'block'
+        } else {
+            imageBlock.style.display = 'none';
+        }
+    }
+
+    // Початкова установка
+    toggleImageBlock();
+
+    // Обробка змін
+    if (photoRadio && simpleRadio) {
+        photoRadio.addEventListener('change', toggleImageBlock);
+        simpleRadio.addEventListener('change', toggleImageBlock);
+    }
+});
+</script>
 
 {% endblock %}

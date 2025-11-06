@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from cms.models import HmPage
 
 def get_menu():
     return [
@@ -23,9 +24,15 @@ def get_menu():
 def index(request):
     menu_items = get_menu()
     print(menu_items)
-    return render(request, 'main/index.html', {'menu_items': menu_items})
+    # context = {
+    #     'menu_items': menu_items,
+    # }
+    return render(request, 'main/index.html')
 
 def about(request):
     menu_items = get_menu()
     print(menu_items)
     return render(request, 'main/about.html', {'menu_items': menu_items})
+
+def affiche(request):
+    return render(request, 'main/affiche.html')
