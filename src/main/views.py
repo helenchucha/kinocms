@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from cms.models import HmPage
+from django.shortcuts import render, get_object_or_404
+from cms.models import HmPage, Pages
 
 def get_menu():
     return [
@@ -21,9 +21,16 @@ def get_menu():
         },
     ]
 
+def page_detail(request, slug):
+    page = get_object_or_404(Pages, slug=slug)
+    context = {
+        'page': page,
+    }
+    return render(request, page.template_name, context)
+
 def index(request):
-    menu_items = get_menu()
-    print(menu_items)
+    # menu_items = get_menu()
+    # print(menu_items)
     # context = {
     #     'menu_items': menu_items,
     # }

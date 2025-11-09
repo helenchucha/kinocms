@@ -121,7 +121,9 @@
                 </div>
                 <!-- Соцмережі -->
                 <div class="socials mx-2">
-                    <a href="#"><i class="bi bi-facebook fs-3 me-2"></i></a>  <a href="#"><i class="bi bi-twitter fs-3 me-2"></i></a>  <a href="#"><i class="bi bi-instagram fs-3 me-2"></i></a>
+                    <a href="#"><i class="bi bi-facebook fs-3 me-2"></i></a> <a href="#"><i
+                        class="bi bi-twitter fs-3 me-2"></i></a> <a href="#"><i
+                        class="bi bi-instagram fs-3 me-2"></i></a>
                 </div>
                 <!-- Телефони -->
                 <div class="phones mx-2">
@@ -139,19 +141,24 @@
                 <!-- Меню -->
                 <nav class="navbar navbar-expand-sm p-0">
                     {% for item in menu_items %}
-                    {% if item.children.all %}
+                    {% if item.children and item.children.all %}
                     <!-- Пункт з підменю -->
                     <div class="dropdown">
+                        {% with clean_slug=item.slug|cut:'/' %}
                         <a class="nav-link dropdown-toggle"
-                           href="{% if item.url_name %}{% url item.url_name %}{% endif %}"
+                           href="{% if item.url_name and item.slug %}{% url item.url_name slug=clean_slug %}{% else %}#{% endif %}"
                            id="dropdown{{ forloop.counter }}" data-bs-toggle="dropdown" aria-expanded="false"
                            style="cursor: pointer;">
                             {{ item.name }}
                         </a>
+                        {% endwith %}
                         <ul class="dropdown-menu" aria-labelledby="dropdown{{ forloop.counter }}">
                             {% for child in item.children.all %}
-                            {% if child.url_name %}
-                            <li><a class="dropdown-item" href="{% url child.url_name %}">{{ child.title }}</a></li>
+                            {% if child.url_name and child.slug %}
+                            {% with clean_child_slug=child.slug|cut:'/' %}
+                            <li><a class="dropdown-item" href="{% url child.url_name slug=clean_child_slug %}">{{
+                                child.title }}</a></li>
+                            {% endwith %}
                             {% else %}
                             <li><span class="dropdown-item">{{ child.title }}</span></li>
                             {% endif %}
@@ -160,11 +167,13 @@
                     </div>
                     {% else %}
                     <!-- Без підменю -->
-                    {% if item.url_name %}
-                    <a class="nav-link" href="{% if item.url_name %}{% url item.url_name %}{% endif %}" style="cursor: {% if item.url_name %}pointer{% else %}not-allowed{% endif %};">{{ item.name }}</a>
+                    {% with clean_slug=item.slug|cut:'/' %}
+                    {% if item.url_name and item.slug %}
+                    <a class="nav-link" href="{% url item.url_name slug=clean_slug %}" style="cursor: pointer;">{{ item.name }}</a>
                     {% else %}
                     <span style="cursor: pointer;">{{ item.name }}</span>
                     {% endif %}
+                    {% endwith %}
                     {% endif %}
                     {% endfor %}
                 </nav>
@@ -177,7 +186,6 @@
                     </select>
                 </div>
             </div>
-
 
 
         </div>
@@ -193,55 +201,41 @@
 
 <!-- Footer -->
 <footer class="footer bg-light py-4 mt-4">
-  <div class="container d-flex justify-content-between flex-wrap">
+    <div class="container d-flex justify-content-between flex-wrap">
 
-    <!-- Блок 1: Мобильные приложения -->
-    <div class="footer-block mb-3" style="min-width:200px;">
-      <h5>Мобильные приложения</h5>
-      <ul class="list-unstyled">
-        <li><a href="#">Android</a></li>
-        <li><a href="#">iOS</a></li>
-        <li><a href="#">Windows</a></li>
-      </ul>
+        <!-- Блок 1: Мобильные приложения -->
+        <div class="footer-block mb-3" style="min-width:200px;">
+            <h5>Мобильные приложения</h5>
+            <ul class="list-unstyled">
+                <li><a href="#">Android</a></li>
+                <li><a href="#">iOS</a></li>
+                <li><a href="#">Windows</a></li>
+            </ul>
+        </div>
+
+        <!-- Блок 2: Пункты меню (окрім "О кинотеатре") -->
+
+
+        <!-- Блок 3: "О кинотеатре" -->
+        <div class="footer-block mb-3" style="min-width:200px;">
+            <h5>О кинотеатре</h5>
+        </div>
+
+        <!-- Блок 4: Иконки соцсетей -->
+        <div class="footer-block mb-3 d-flex flex-column align-items-center" style="min-width:200px;">
+            <div class="social-icons d-flex gap-3">
+                <a href="#" class="text-dark"><i class="bi bi-facebook fs-4"></i></a>
+                <a href="#" class="text-dark"><i class="bi bi-twitter fs-4"></i></a>
+                <a href="#" class="text-dark"><i class="bi bi-instagram fs-4"></i></a>
+                <a href="#" class="text-dark"><i class="bi bi-telegram fs-4"></i></a>
+            </div>
+        </div>
+
     </div>
-
-    <!-- Блок 2: Пункты меню (окрім "О кинотеатре") -->
-    <div class="footer-block mb-3" style="min-width:200px;">
-      <ul class="list-unstyled">
-        {% for item in menu_items %}
-          {% if item.name != "О кинотеатре" %}
-            <li>
-              {% if item.url_name %}
-                <a href="{% url item.url_name %}">{{ item.name }}</a>
-              {% else %}
-                <span>{{ item.name }}</span>
-              {% endif %}
-            </li>
-          {% endif %}
-        {% endfor %}
-      </ul>
-    </div>
-
-    <!-- Блок 3: "О кинотеатре" -->
-    <div class="footer-block mb-3" style="min-width:200px;">
-      <h5>О кинотеатре</h5>
-    </div>
-
-    <!-- Блок 4: Иконки соцсетей -->
-    <div class="footer-block mb-3 d-flex flex-column align-items-center" style="min-width:200px;">
-      <div class="social-icons d-flex gap-3">
-        <a href="#" class="text-dark"><i class="bi bi-facebook fs-4"></i></a>
-        <a href="#" class="text-dark"><i class="bi bi-twitter fs-4"></i></a>
-        <a href="#" class="text-dark"><i class="bi bi-instagram fs-4"></i></a>
-        <a href="#" class="text-dark"><i class="bi bi-telegram fs-4"></i></a>
-      </div>
-    </div>
-
-  </div>
 </footer>
 
 <div class="bottom-line bg-light text-center py-2">
-  @KinoCMS 2025
+    @KinoCMS 2025
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

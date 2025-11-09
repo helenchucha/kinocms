@@ -1,5 +1,5 @@
 from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from user.models import User
 from cms.models import HmPage, Pages
 
@@ -192,6 +192,13 @@ def mailing(request):
         'active_page': 'mailing',
         'page_title': 'Рассылка',
     })
+
+# def page_detail(request, slug):
+#     page = get_object_or_404(Pages, slug=slug)
+#     context = {
+#         'page': page,
+#     }
+#     return render(request, page.template_name, context)
 
 # @staff_required_or_permission_denied
 # def some_admin_only_view(request):

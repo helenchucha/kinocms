@@ -4,13 +4,13 @@ from .models import HmPage, Pages
 class HmPageForm(forms.ModelForm):
     class Meta:
         model = HmPage
-        fields = ['title', 'description', 'top_banner', 'status', 'template_name']
+        fields = ['title', 'description', 'top_banner', 'status']
         # додайте потрібні поля
 
 class PagesForm(forms.ModelForm):
     class Meta:
         model = Pages
-        fields = ['title', 'description', 'top_banner', 'status', 'is_default', 'template_name']
+        fields = ['title', 'description', 'top_banner', 'status', 'is_default']
         # додайте потрібні поля
 
 class PageEditForm(forms.ModelForm):
@@ -25,12 +25,12 @@ class PageEditForm(forms.ModelForm):
             self.Meta.model = HmPage
             self.Meta.fields = [
                 'title', 'description', 'top_banner', 'phone1', 'phone2',
-                'status', 'template_name'
+                'status'
             ]
         elif model_type == 'page':
             self.Meta.model = Pages
             self.Meta.fields = [
-                'title', 'description', 'top_banner', 'status', 'is_default', 'template_name'
+                'title', 'description', 'top_banner', 'status', 'is_default'
             ]
         else:
             raise ValueError("Unknown model_type. Використовуйте 'hm_page' або 'page'.")
