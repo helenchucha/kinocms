@@ -31,9 +31,14 @@
                                 <td>{{ main_page.creation_date|date:"d.m.Y H:i" }}</td>
                                 <td>{{ main_page.status }}</td>
                                 <td>
-                                    <a href="{% url 'page_edit' main_page.object.id %}" class="btn btn-sm btn-primary" title="Редагувати">
+                                    {% if main_page.object.id %}
+                                    <a href="{% url 'page_edit_hmpage' pk=main_page.object.id %}"
+                                       class="btn btn-sm btn-primary" title="Редагувати">
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
+                                    {% else %}
+                                    <span>Без ID</span>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% else %}
@@ -50,8 +55,8 @@
                                 <td>{{ item.status }}</td>
                                 <td>
                                     {% if item.object.id %}
-                                    <a href="{% url 'page_edit' item.object.id %}" class="btn btn-sm btn-primary"
-                                       title="Редагувати">
+                                    <a href="{% url 'page_edit' pk=item.object.id %}"
+                                       class="btn btn-sm btn-primary" title="Редагувати">
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
                                     {% else %}

@@ -1,19 +1,122 @@
 {% extends 'cms/admin_base.html' %}
+{% load widget_tweaks %}
 
 {% block content %}
-<!--begin::Form Validation-->
 <div class="card card-info card-outline mb-4">
-    <!--begin::Header-->
-    <div class="card-header"><div class="card-title"></div></div>
-    <!--end::Header-->
-    <!--begin::Form-->
+    <div class="card-header">
+        <div class="card-title"></div>
+    </div>
     <form class="needs-validation" method="post" novalidate>
         {% csrf_token %}
-        <!--begin::Body-->
+        {{ form_hmpage.errors }}
+        {{ form_seo.errors }}
         <div class="card-body edit-form">
-            <!--перша пара рядків з двома полями-->
-            <div class="row g-3">
-                <!-- Phone1 -->
+            <div class="row g-3 align-items-center mb-3">
+                <div class="col-md-4">
+                </div>
+
+                <!-- Поле статус у вигляді перемикача -->
+                <div class="col-md-4">
+                    <div class="col-md-6 form-check form-switch">
+                        <input type="hidden" name="status" value="False" />
+                        <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="status"
+                                name="status"
+                                value="True"
+                                {% if form_hmpage.status.value %} checked {% endif %}
+                        >
+                        <label class="form-check-label" for="status">Активная</label>
+                    </div>
+                </div>
+
+                <!-- Перемикач мови у вигляді вкладок -->
+                <div class="col-md-4">
+                    <ul class="nav nav-tabs" id="languageTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button
+                                    class="nav-link {% if form_hmpage.language.value == 'uk' or not form_hmpage.language.value %} active {% endif %}"
+                                    id="uk-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#uk"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="uk"
+                                    aria-selected="{% if form_hmpage.language.value == 'uk' or not form_hmpage.language.value %} true {% else %} false {% endif %}"
+                            >
+                                Украинский
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button
+                                    class="nav-link {% if form_hmpage.language.value == 'ru' %} active {% endif %}"
+                                    id="ru-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#ru"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="ru"
+                                    aria-selected="{% if form_hmpage.language.value == 'ru' %} true {% else %} false {% endif %}"
+                            >
+                                Русский
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="languageTabContent">
+                        <div
+                                class="tab-pane fade {% if form_hmpage.language.value == 'uk' or not form_hmpage.language.value %} show active {% endif %}"
+                                id="uk"
+                                role="tabpanel"
+                                aria-labelledby="uk-tab"
+                        >
+                            <!-- Тут можна додати додаткове поле або приховати, якщо потрібно -->
+                            <input type="hidden" name="language" value="uk"/>
+                        </div>
+                        <div
+                                class="tab-pane fade {% if form_hmpage.language.value == 'ru' %} show active {% endif %}"
+                                id="ru"
+                                role="tabpanel"
+                                aria-labelledby="ru-tab"
+                        >
+                            <input type="hidden" name="language" value="ru"/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!--            &lt;!&ndash; Поле статус у вигляді перемикача &ndash;&gt;-->
+            <!--            <div class="row g-3">-->
+            <!--                <div class="col-md-6 form-check form-switch">-->
+            <!--                    <input-->
+            <!--                            class="form-check-input"-->
+            <!--                            type="checkbox"-->
+            <!--                            id="status"-->
+            <!--                            name="status"-->
+            <!--                            {% if form_hmpage.status.value %} checked {% endif %}-->
+            <!--                    >-->
+            <!--                    <label class="form-check-label" for="status">Активний</label>-->
+            <!--                </div>-->
+            <!--            </div>-->
+
+            <!-- Title -->
+            <div class="row g-3 mt-3">
+                <div class="col-md-6">
+                    <label for="title" class="form-label">Название</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="title"
+                            name="title"
+                            value="{{ form_hmpage.title.value|default:'' }}"
+                            required
+                    />
+                </div>
+            </div>
+
+            <!-- Телефон 1 -->
+            <div class="row g-3 mt-3">
                 <div class="col-md-6">
                     <label for="phone1" class="form-label">Телефон 1</label>
                     <input
@@ -21,19 +124,14 @@
                             class="form-control"
                             id="phone1"
                             name="phone1"
-                            value="{{ form.phone1.value|default:'' }}"
+                            value="{{ form_hmpage.phone1.value|default:'' }}"
                             required
                     />
-                    <div class="valid-feedback">Looks good!</div>
                 </div>
-
             </div>
-        </div>
 
-        <div class="card-body edit-form">
-            <!--друга пара рядків з двома полями-->
-            <div class="row g-3">
-                <!-- Phone2 -->
+            <!-- Телефон 2 -->
+            <div class="row g-3 mt-3">
                 <div class="col-md-6">
                     <label for="phone2" class="form-label">Телефон 2</label>
                     <input
@@ -41,92 +139,106 @@
                             class="form-control"
                             id="phone2"
                             name="phone2"
-                            value="{{ form.phone2.value|default:'' }}"
+                            value="{{ form_hmpage.phone2.value|default:'' }}"
                             required
                     />
-                    <div class="valid-feedback">Looks good!</div>
                 </div>
-
             </div>
+
+            <!-- SEO текст -->
+            <div class="row g-3 mt-3">
+                <div class="col-md-6">
+                    <label for="seo_text" class="form-label">SEO текст</label>
+                    <textarea
+                            id="seo_text"
+                            name="seo_text"
+                            class="form-control"
+                            required
+                            aria-label="SEO текст"
+                    >{{ form_seo.initial.seo_text|default:'' }}</textarea>
+                </div>
+            </div>
+
+            <!-- SEO URL -->
+            <div class="row g-3 mt-3">
+                <div class="col-md-6">
+                    <label for="seo_url" class="form-label">SEO URL</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="seo_url"
+                            name="seo_url"
+                            value="{{ form_seo.seo_url.value|default:'' }}"
+                    />
+                </div>
+            </div>
+
+            <!-- SEO Title -->
+            <div class="row g-3 mt-3">
+                <div class="col-md-6">
+                    <label for="seo_title" class="form-label">SEO Title</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="seo_title"
+                            name="seo_title"
+                            value="{{ form_seo.seo_title.value|default:'' }}"
+                    />
+                </div>
+            </div>
+
+            <!-- SEO Keywords -->
+            <div class="row g-3 mt-3">
+                <div class="col-md-6">
+                    <label for="seo_keywords" class="form-label">SEO Keywords</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="seo_keywords"
+                            name="seo_keywords"
+                            value="{{ form_seo.seo_keywords.value|default:'' }}"
+                    />
+                </div>
+            </div>
+
+            <!-- SEO Description -->
+            <div class="row g-3 mt-3">
+                <div class="col-md-6">
+                    <label for="seo_description" class="form-label">SEO Description</label>
+                    <textarea
+                            id="seo_description"
+                            name="seo_description"
+                            class="form-control"
+                            aria-label="SEO Description"
+                    >{{ form_seo.initial.seo_description|default:'' }}</textarea>
+                </div>
+            </div>
+
         </div>
 
-
-
-        <!--end::Body-->
-        <!--begin::Footer-->
+        <!-- Футер -->
         <div class="card-footer">
             <button class="btn btn-info" type="submit">Сохранить</button>
-            <a href="{% url 'page_list' %}" class="btn btn-secondary">Отмена</a>
+            <a href="{% url 'page_list' %}" class="btn btn-secondary">Отменить</a>
         </div>
-        <!--end::Footer-->
     </form>
-    <!--end::Form-->
-    <!--begin::JavaScript-->
-    <script>
-        // Example starter JavaScript for disabling form submissions if there are invalid fields
-        (() => {
-            'use strict';
-
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            const forms = document.querySelectorAll('.needs-validation');
-
-            // Loop over them and prevent submission
-            Array.from(forms).forEach((form) => {
-                form.addEventListener(
-                    'submit',
-                    (event) => {
-                        if (!form.checkValidity()) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-
-                        form.classList.add('was-validated');
-                    },
-                    false,
-                );
-            });
-        })();
-    </script>
-    <!--end::JavaScript-->
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const nicknameInput = document.getElementById('nickname');
-            const feedbackDiv = document.createElement('div');
-            feedbackDiv.className = 'invalid-feedback'; // або 'valid-feedback' залежно від статусу
-            nicknameInput.parentNode.appendChild(feedbackDiv);
-
-            let timeout = null;
-
-            nicknameInput.addEventListener('input', function() {
-                clearTimeout(timeout);
-                timeout = setTimeout(function() {
-                    const nickname = nicknameInput.value.trim();
-                    if (nickname.length > 0) {
-                        fetch(`/ajax/check-nickname/?nickname=${encodeURIComponent(nickname)}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.exists) {
-                                    feedbackDiv.textContent = 'Цей псевдонім вже зайнятий.';
-                                    nicknameInput.classList.add('is-invalid');
-                                    nicknameInput.classList.remove('is-valid');
-                                } else {
-                                    feedbackDiv.textContent = '';
-                                    nicknameInput.classList.remove('is-invalid');
-                                    nicknameInput.classList.add('is-valid');
-                                }
-                            });
-                    } else {
-                        // Якщо поле порожнє, можна очистити повідомлення
-                        feedbackDiv.textContent = '';
-                        nicknameInput.classList.remove('is-invalid', 'is-valid');
-                    }
-                    }, 500); // затримка для зменшення кількості запитів
-                });
-        });
-    </script>
-
 </div>
-<!--end::Form Validation-->
+
+<script>
+    // Валідація Bootstrap
+    (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach((form) => {
+            form.addEventListener('submit', (event) => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
 
 {% endblock %}

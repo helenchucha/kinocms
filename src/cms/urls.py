@@ -16,7 +16,11 @@ urlpatterns = [
     path('news/', views.news, name='news'),
     path('shares/', views.shares, name='shares'),
     path('pages/', views.page_list, name='page_list'),
-    path('pages/edit/<int:page_id>/', views.page_edit, name='page_edit'),
+    # path('pages/edit/<int:page_id>/', views.page_edit, name='page_edit'),
+    # path('cms/pages/edit/<str:model_type>/<int:pk>/', views.page_edit, name='page_edit'),
+    # Шлях для редагування головної сторінки
+    path('pages/edit/hmpage/<int:pk>/', views.page_edit_hmpage, name='page_edit_hmpage'),
+    path('pages/edit/page/<int:pk>/', views.page_edit, name='page_edit'),
     path('mailing/', views.mailing, name='mailing'),
 ]
 

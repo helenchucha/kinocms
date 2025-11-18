@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
+    'widget_tweaks',
 
     # django-allauth та його залежності
     'django.contrib.sites',  # обов'язково для allauth
@@ -74,7 +75,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates', BASE_DIR / 'templates/main'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -133,11 +134,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
-USE_I18N = True
 
 USE_TZ = True
 
@@ -164,7 +161,7 @@ AUTHENTICATION_BACKENDS = [
 
 # Налаштування для allauth
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  # або 'email' або 'username_email'
-ACCOUNT_LOGIN_METHODS = {'username'}
+ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # або 'optional', 'none'
 # ACCOUNT_USERNAME_REQUIRED = True
@@ -178,3 +175,14 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 GDAL_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/libgdal.so'
 PROJ_LIB = "/usr/share/proj"  # шлях до PROJ
+
+LANGUAGES = [
+    ('uk', 'Ukrainian'),
+    ('ru', 'Russian'),
+]
+LANGUAGE_CODE = 'ru'  # мова за замовчуванням
+USE_I18N = True
+USE_L10N = True
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),  # каталог для файлів перекладів
+]

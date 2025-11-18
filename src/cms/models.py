@@ -29,6 +29,7 @@ class Pages(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     status = models.BooleanField(choices=STATUS_CHOICES, default=False)
     is_default = models.BooleanField(default=False)
+    is_child = models.BooleanField(default=True)
     template_name = models.CharField(max_length=200, blank=True, null=True)  # Назва шаблону
     slug = models.SlugField(max_length=100, unique=True, blank=True)  # Унікальний slug
 
@@ -41,11 +42,16 @@ class Pages(models.Model):
         return self.title
 
 class Seo(models.Model):
-    url = models.CharField(max_length=200, blank=True)
-    title = models.CharField(max_length=255, blank=True)
-    keywords = models.CharField(max_length=500, blank=True)
-    description = models.TextField(blank=True)
-    text = models.TextField(blank=True)
+    seo_url = models.CharField(max_length=200, blank=True)
+    seo_title = models.CharField(max_length=255, blank=True)
+    seo_keywords = models.CharField(max_length=500, blank=True)
+    seo_description = models.TextField(blank=True)
+    seo_text = models.TextField(blank=True)
+
+    # Один до одного з HmPage
+    page = models.OneToOneField(HmPage, on_delete=models.CASCADE, related_name='seo', null=True, blank=True)
+    # Один до одного з Pages
+    page_detail = models.OneToOneField(Pages, on_delete=models.CASCADE, related_name='seo_page', null=True, blank=True)
 
     def __str__(self):
         return self.url

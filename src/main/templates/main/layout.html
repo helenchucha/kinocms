@@ -169,7 +169,7 @@
                     <!-- Без підменю -->
                     {% with clean_slug=item.slug|cut:'/' %}
                     {% if item.url_name and item.slug %}
-                    <a class="nav-link" href="{% url item.url_name slug=clean_slug %}" style="cursor: pointer;">{{ item.name }}</a>
+                    <a class="nav-link" href="{% if item.url_name and item.slug %}{% url item.url_name slug=clean_slug %}{% else %}#{% endif %}" style="cursor: pointer;">{{ item.name }}</a>
                     {% else %}
                     <span style="cursor: pointer;">{{ item.name }}</span>
                     {% endif %}

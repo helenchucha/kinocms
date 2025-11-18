@@ -1,18 +1,19 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, get_object_or_404
 from user.models import User
-from cms.models import HmPage, Pages
+from cms.models import HmPage, Pages, Seo
 
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.urls import reverse
 from .user_edit_form import UserEditForm
-from .page_edit_form import HmPageForm, PagesForm
+from .page_edit_form import HmPageForm, PagesForm, SeoForm
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 from .cities import CITIES
 from .decorators import staff_required
+
 
 
 @staff_required
@@ -155,36 +156,88 @@ def page_list(request):
     })
 
 
-def page_edit(request, page_id):
-    # Спершу намагаємось знайти у HmPage
-    try:
-        page_instance = HmPage.objects.get(id=page_id)
-        is_main_page = True
-    except HmPage.DoesNotExist:
-        # Якщо не знайдено, шукаємо у Pages
-        page_instance = get_object_or_404(Pages, id=page_id)
-        is_main_page = False
+# def page_edit(request, page_id):
+#     # Спершу намагаємось знайти у HmPage
+#     try:
+#         page_instance = HmPage.objects.get(id=page_id)
+#         is_main_page = True
+#     except HmPage.DoesNotExist:
+#         # Якщо не знайдено, шукаємо у Pages
+#         page_instance = get_object_or_404(Pages, id=page_id)
+#         is_main_page = False
+#
+#     # Вибираємо форму залежно від типу сторінки
+#     if is_main_page:
+#         PageEditForm = HmPageForm
+#         template_name = 'cms/hmpage_edit.html'
+#     else:
+#         PageEditForm = PagesForm
+#         template_name = 'cms/page_edit.html'
+#
+#     if request.method == 'POST':
+#         form = PageEditForm(request.POST, instance=page_instance)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Страница успішно оновлена.')
+#             return redirect('page_list')  # переконайтеся, що цей URL існує
+#         else:
+#             print("Помилка у формі:", form.errors)
+#     else:
+#         form = PageEditForm(instance=page_instance)
+#
+#     return render(request, template_name, {'form': form, 'page': page_instance})
 
-    # Вибираємо форму залежно від типу сторінки
-    if is_main_page:
-        PageEditForm = HmPageForm
-        template_name = 'cms/hmpage_edit.html'
-    else:
-        PageEditForm = PagesForm
-        template_name = 'cms/page_edit.html'
+def page_edit_hmpage(request, pk):
+    # Отримати сторінку або 404
+    hmpage = get_object_or_404(HmPage, pk=pk)
+
+    # Отримати або створити SEO
+    seo_obj, created = Seo.objects.get_or_create(page=hmpage)
 
     if request.method == 'POST':
-        form = PageEditForm(request.POST, instance=page_instance)
+        print("Received POST data:", request.POST)
+        form_hmpage = HmPageForm(request.POST, instance=hmpage)
+        form_seo = SeoForm(request.POST, instance=seo_obj)
+        print("Form HmPage is_valid:", form_hmpage.is_valid())
+        print("Form Seo is_valid:", form_seo.is_valid())
+        if not form_hmpage.is_valid():
+            print("HmPage errors:", form_hmpage.errors)
+        if not form_seo.is_valid():
+            print("Seo errors:", form_seo.errors)
+        if form_hmpage.is_valid() and form_seo.is_valid():
+            form_hmpage.save()
+            form_seo.save()
+            return redirect('page_list')
+    else:
+        # Передаємо форми з існуючими даними
+        form_hmpage = HmPageForm(instance=hmpage)
+        form_seo = SeoForm(instance=seo_obj)
+
+    return render(request, 'cms/hmpage_edit.html', {
+        'form_hmpage': form_hmpage,
+        'form_seo': form_seo,
+        'hmpage': hmpage,
+        'active_page': 'pages',
+        'page_title': 'Редактировать главную страницу',
+    })
+
+def page_edit(request, pk):
+    # Отримуємо об'єкт HmPage або 404
+    page = get_object_or_404(Pages, pk=pk)
+
+    if request.method == 'POST':
+        form = PagesForm(request.POST, instance=page)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Страница успішно оновлена.')
-            return redirect('page_list')  # переконайтеся, що цей URL існує
-        else:
-            print("Помилка у формі:", form.errors)
+            # Після збереження — редірект на список або іншу сторінку
+            return redirect('page_list')  # або інший URL
     else:
-        form = PageEditForm(instance=page_instance)
+        form = HmPageForm(instance=page)
 
-    return render(request, template_name, {'form': form, 'page': page_instance})
+    return render(request, 'cms/page_edit.html', {
+        'form': form,
+        'object': page,
+    })
 
 
 def mailing(request):
