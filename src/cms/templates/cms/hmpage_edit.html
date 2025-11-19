@@ -1,5 +1,6 @@
 {% extends 'cms/admin_base.html' %}
 {% load widget_tweaks %}
+{% load i18n %}
 
 {% block content %}
 <div class="card card-info card-outline mb-4">
@@ -27,7 +28,9 @@
                                 value="True"
                                 {% if form_hmpage.status.value %} checked {% endif %}
                         >
-                        <label class="form-check-label" for="status">Активная</label>
+                        <label class="form-check-label" for="status">
+                            <span id="status-label">{% if form_hmpage.status.value %}ВКЛ{% else %}ВЫКЛ{% endif %}</span>
+                        </label>
                     </div>
                 </div>
 
@@ -70,7 +73,7 @@
                                 role="tabpanel"
                                 aria-labelledby="uk-tab"
                         >
-                            <!-- Тут можна додати додаткове поле або приховати, якщо потрібно -->
+
                             <input type="hidden" name="language" value="uk"/>
                         </div>
                         <div
@@ -86,39 +89,42 @@
 
             </div>
 
-            <!--            &lt;!&ndash; Поле статус у вигляді перемикача &ndash;&gt;-->
-            <!--            <div class="row g-3">-->
-            <!--                <div class="col-md-6 form-check form-switch">-->
-            <!--                    <input-->
-            <!--                            class="form-check-input"-->
-            <!--                            type="checkbox"-->
-            <!--                            id="status"-->
-            <!--                            name="status"-->
-            <!--                            {% if form_hmpage.status.value %} checked {% endif %}-->
-            <!--                    >-->
-            <!--                    <label class="form-check-label" for="status">Активний</label>-->
-            <!--                </div>-->
-            <!--            </div>-->
+            <!-- Поле Title оригінальне (приховане) -->
+            {{ form_hmpage.title }}
 
-            <!-- Title -->
-            <div class="row g-3 mt-3">
-                <div class="col-md-6">
-                    <label for="title" class="form-label">Название</label>
+            <!-- Поле Title (російська мова - дефолт) -->
+            <div class="row g-3 mt-3" id="title-ru-group">
+                <div class="col-md-4" data-lang="ru">
+                    <label for="title_ru" class="form-label">{% trans "Название" %}</label>
                     <input
                             type="text"
                             class="form-control"
-                            id="title"
-                            name="title"
-                            value="{{ form_hmpage.title.value|default:'' }}"
-                            required
+                            id="title_ru"
+                            name="title_ru"
+                            value="{{ form_hmpage.title_ru.value|default:form_hmpage.title_ru.initial }}"
                     />
                 </div>
             </div>
 
+            <!-- Поле Title (українська мова) -->
+            <div class="row g-3 mt-3" id="title-uk-group" style="display: none;">
+                <div class="col-md-4" data-lang="uk">
+                    <label for="title_uk" class="form-label">{% trans "Название" %}</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="title_uk"
+                            name="title_uk"
+                            value="{{ form_hmpage.title_uk.value|default:form_hmpage.title_uk.initial }}"
+                    />
+                </div>
+            </div>
+
+
             <!-- Телефон 1 -->
             <div class="row g-3 mt-3">
-                <div class="col-md-6">
-                    <label for="phone1" class="form-label">Телефон 1</label>
+                <div class="col-md-3">
+                    <label for="phone1" class="form-label">{% trans "Телефон 1" %}</label>
                     <input
                             type="text"
                             class="form-control"
@@ -132,8 +138,8 @@
 
             <!-- Телефон 2 -->
             <div class="row g-3 mt-3">
-                <div class="col-md-6">
-                    <label for="phone2" class="form-label">Телефон 2</label>
+                <div class="col-md-3">
+                    <label for="phone2" class="form-label">{% trans "Телефон 2" %}</label>
                     <input
                             type="text"
                             class="form-control"
@@ -147,79 +153,86 @@
 
             <!-- SEO текст -->
             <div class="row g-3 mt-3">
-                <div class="col-md-6">
-                    <label for="seo_text" class="form-label">SEO текст</label>
+                <div class="col-12">
+                    <label for="seo_text" class="form-label">{% trans "SEO текст" %}</label>
                     <textarea
                             id="seo_text"
                             name="seo_text"
                             class="form-control"
+                            style="height: 100px;"
                             required
                             aria-label="SEO текст"
                     >{{ form_seo.initial.seo_text|default:'' }}</textarea>
                 </div>
             </div>
 
-            <!-- SEO URL -->
-            <div class="row g-3 mt-3">
-                <div class="col-md-6">
-                    <label for="seo_url" class="form-label">SEO URL</label>
-                    <input
-                            type="text"
-                            class="form-control"
-                            id="seo_url"
-                            name="seo_url"
-                            value="{{ form_seo.seo_url.value|default:'' }}"
-                    />
-                </div>
-            </div>
+            <div class="card mt-4 p-3" style="max-width: 800px; margin: 0 auto;">
+                <h5 class="text-center mb-3">{% trans "SEO блок" %}</h5>
 
-            <!-- SEO Title -->
-            <div class="row g-3 mt-3">
-                <div class="col-md-6">
-                    <label for="seo_title" class="form-label">SEO Title</label>
-                    <input
-                            type="text"
-                            class="form-control"
-                            id="seo_title"
-                            name="seo_title"
-                            value="{{ form_seo.seo_title.value|default:'' }}"
-                    />
+                <!-- SEO URL -->
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <label for="seo_url" class="form-label">{% trans "SEO URL" %}</label>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="seo_url"
+                                name="seo_url"
+                                value="{{ form_seo.seo_url.value|default:'' }}"
+                        />
+                    </div>
                 </div>
-            </div>
 
-            <!-- SEO Keywords -->
-            <div class="row g-3 mt-3">
-                <div class="col-md-6">
-                    <label for="seo_keywords" class="form-label">SEO Keywords</label>
-                    <input
-                            type="text"
-                            class="form-control"
-                            id="seo_keywords"
-                            name="seo_keywords"
-                            value="{{ form_seo.seo_keywords.value|default:'' }}"
-                    />
+                <!-- SEO Title -->
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <label for="seo_title" class="form-label">{% trans "SEO Title" %}</label>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="seo_title"
+                                name="seo_title"
+                                value="{{ form_seo.seo_title.value|default:'' }}"
+                        />
+                    </div>
                 </div>
-            </div>
 
-            <!-- SEO Description -->
-            <div class="row g-3 mt-3">
-                <div class="col-md-6">
-                    <label for="seo_description" class="form-label">SEO Description</label>
-                    <textarea
-                            id="seo_description"
-                            name="seo_description"
-                            class="form-control"
-                            aria-label="SEO Description"
-                    >{{ form_seo.initial.seo_description|default:'' }}</textarea>
+                <!-- SEO Keywords -->
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <label for="seo_keywords" class="form-label">{% trans "SEO Keywords" %}</label>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="seo_keywords"
+                                name="seo_keywords"
+                                value="{{ form_seo.seo_keywords.value|default:'' }}"
+                        />
+                    </div>
                 </div>
+
+                <!-- SEO Description -->
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <label for="seo_description" class="form-label">{% trans "SEO Description" %}</label>
+                        <textarea
+                                id="seo_description"
+                                name="seo_description"
+                                class="form-control"
+                                style="height: 100px;"
+                                aria-label="SEO Description"
+                        >{{ form_seo.initial.seo_description|default:'' }}</textarea>
+                    </div>
+                </div>
+
             </div>
 
         </div>
 
         <!-- Футер -->
         <div class="card-footer">
-            <button class="btn btn-info" type="submit">Сохранить</button>
-            <a href="{% url 'page_list' %}" class="btn btn-secondary">Отменить</a>
+            <button class="btn btn-info" type="submit">{% trans "Сохранить" %}</button>
+            <a href="{% url 'page_list' %}" class="btn btn-secondary">{% trans "Отменить" %}</a>
         </div>
     </form>
 </div>
@@ -239,6 +252,56 @@
             }, false);
         });
     })();
+</script>
+
+<script>
+function showLanguageFields(lang) {
+    // ховаємо всі групи
+    document.querySelectorAll('#title-ru-group, #title-uk-group').forEach(group => {
+        group.style.display = 'none';
+    });
+    // показуємо потрібне
+    document.querySelector(`#title-${lang}-group`).style.display = 'block';
+
+    // оновлюємо приховане поле з мовою (якщо потрібно)
+    document.querySelector('input[name="language"]').value = lang;
+}
+
+// додати обробники натискань
+document.querySelectorAll('#languageTab button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const lang = btn.getAttribute('data-lang') || (btn.id.includes('uk') ? 'uk' : 'ru');
+        showLanguageFields(lang);
+    });
+});
+
+// ініціалізація при завантаженні
+document.addEventListener('DOMContentLoaded', () => {
+    // визначити активну мову (залежно від значення form або за замовчуванням)
+    const activeLang = document.querySelector('input[name="language"]').value || 'ru';
+    showLanguageFields(activeLang);
+});
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const checkbox = document.getElementById('status');
+    const labelText = document.getElementById('status-label');
+
+    function updateLabel() {
+      if (checkbox.checked) {
+        labelText.textContent = 'ВКЛ';
+      } else {
+        labelText.textContent = 'ВЫКЛ';
+      }
+    }
+
+    // Початкове оновлення при завантаженні
+    updateLabel();
+
+    // Оновлюємо при зміні стану
+    checkbox.addEventListener('change', updateLabel);
+  });
 </script>
 
 {% endblock %}

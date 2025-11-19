@@ -13,6 +13,7 @@ def format_phone(phone):
 
 def phones(request):
     hmpage = HmPage.objects.first()
+    status = hmpage.status
     phone1 = hmpage.phone1 if hmpage else ''
     phone2 = hmpage.phone2 if hmpage else ''
 
@@ -31,6 +32,7 @@ def phones(request):
     print(menu_items)
 
     return {
+        'status': status,
         'phone1': format_phone(phone1),
         'phone2': format_phone(phone2),
         'menu_items': menu_items,

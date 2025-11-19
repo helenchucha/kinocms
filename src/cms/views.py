@@ -122,7 +122,7 @@ def page_list(request):
     main_page_info = {
         'type': 'main_page',
         'object': main_page,
-        'title': main_page.title,
+        'title': main_page.title_ru,
         'creation_date': main_page.creation_date,
         'status': 'ВКЛ' if main_page.status else 'ВИКЛ',
     }

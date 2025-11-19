@@ -2,9 +2,18 @@ from django import forms
 from .models import HmPage, Pages, Seo
 
 class HmPageForm(forms.ModelForm):
+    title = forms.CharField(widget=forms.HiddenInput(), required=False)
     class Meta:
         model = HmPage
-        fields = ['title', 'description', 'top_banner', 'status', 'phone1', 'phone2']
+        fields = ['title', 'title_ru', 'title_uk', 'description', 'description_ru', 'description_uk', 'top_banner', 'status', 'phone1', 'phone2']
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        # Присвоюємо значення з 'title_ru' у 'title'
+        instance.title = self.cleaned_data.get('title_ru')
+        if commit:
+            instance.save()
+        return instance
 
 class PagesForm(forms.ModelForm):
     class Meta:

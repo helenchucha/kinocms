@@ -10,54 +10,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body>
-<!-- Блок юзера -->
-<!--<div class="top-user-menu d-flex justify-content-end p-2 bg-light border-bottom">-->
-<!--    <i class="nav-icon bi bi-newspaper"></i>-->
-<!--    <li class="nav-item dropdown user-menu">-->
-<!--        <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">-->
-<!--            <img-->
-<!--                    src="{% static 'dist/assets/img/user2-160x160.jpg' %}"-->
-<!--                    class="user-image rounded-circle shadow me-2"-->
-<!--                    alt="User Image"-->
-<!--                    style="width:40px; height:40px;"-->
-<!--            />-->
-<!--            {% if user.is_authenticated %}-->
-<!--            <span>{{ user.get_full_name|default:user.username }}</span>-->
-<!--            {% else %}-->
-<!--            <span>Гість</span>-->
-<!--            {% endif %}-->
-<!--        </a>-->
-<!--        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-2">-->
-<!--            &lt;!&ndash; User info &ndash;&gt;-->
-<!--            <li class="text-center mb-2">-->
-<!--                <img-->
-<!--                        src="{% static 'dist/assets/img/user2-160x160.jpg' %}"-->
-<!--                        class="rounded-circle shadow mb-2"-->
-<!--                        alt="User Image"-->
-<!--                        style="width:60px; height:60px;"-->
-<!--                />-->
-<!--                {% if user.is_authenticated %}-->
-<!--                <p class="mb-0">-->
-<!--                    {{ user.get_full_name|default:user.username }}-->
-<!--                    <br>-->
-<!--                    <small>Member since {{ user.date_joined|date:"b Y" }}</small>-->
-<!--                </p>-->
-<!--                {% else %}-->
-<!--                <p class="mb-0">Гість</p>-->
-<!--                {% endif %}-->
-<!--            </li>-->
-<!--            &lt;!&ndash; Menu buttons &ndash;&gt;-->
-<!--            <li class="px-2">-->
-<!--                <a href="#" class="d-block mb-2 btn btn-sm btn-primary w-100">Profile</a>-->
-<!--                {% if user.is_authenticated %}-->
-<!--                <a href="{% url 'logout' %}" class="d-block btn btn-sm btn-danger w-100">Sign out</a>-->
-<!--                {% else %}-->
-<!--                <a href="{% url 'login' %}" class="d-block btn btn-sm btn-success w-100">Login</a>-->
-<!--                {% endif %}-->
-<!--            </li>-->
-<!--        </ul>-->
-<!--    </li>-->
-<!--</div>-->
 
 <div class="top-user-menu d-flex justify-content-end p-2 bg-light border-bottom align-items-center">
     <!-- Іконка користувача -->
@@ -127,11 +79,15 @@
                 </div>
                 <!-- Телефони -->
                 <div class="phones mx-2">
+                    {% if status %}
                     {% if phone1 %}
                     <a href="tel:{{ phone1 }}" class="phone-link">{{ phone1 }}</a>
                     {% endif %}
                     {% if phone2 %}
                     <a href="tel:{{ phone2 }}" class="phone-link">{{ phone2 }}</a>
+                    {% endif %}
+                    {% else %}
+                    <!-- Телефони приховані, бо сторінка неактивна -->
                     {% endif %}
                 </div>
             </div>
