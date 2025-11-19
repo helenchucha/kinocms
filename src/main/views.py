@@ -32,9 +32,7 @@ def index(request):
     return render(request, 'main/index.html')
 
 def about(request):
-    menu_items = get_menu()
-    print(menu_items)
-    return render(request, 'main/about.html', {'menu_items': menu_items})
+    return render(request, 'main/about.html', {'active_slug': 'o-kinoteatri', })
 
 def affiche(request):
     return render(request, 'main/affiche.html')

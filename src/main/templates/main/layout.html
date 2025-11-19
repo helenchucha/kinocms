@@ -1,4 +1,6 @@
 {% load static %}
+{% load widget_tweaks %}
+{% load i18n %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -96,8 +98,45 @@
             <div class="bottom-row d-flex justify-content-between align-items-center">
                 <!-- Меню -->
                 <nav class="navbar navbar-expand-sm p-0">
+<!--                    {% for item in menu_items %}-->
+<!--                    {% if item.children and item.children.all %}-->
+<!--                    &lt;!&ndash; Пункт з підменю &ndash;&gt;-->
+<!--                    <div class="dropdown">-->
+<!--                        {% with clean_slug=item.slug|cut:'/' %}-->
+<!--                        <a class="nav-link dropdown-toggle"-->
+<!--                           href="{% if item.url_name and item.slug %}{% url item.url_name slug=clean_slug %}{% else %}#{% endif %}"-->
+<!--                           id="dropdown{{ forloop.counter }}" data-bs-toggle="dropdown" aria-expanded="false"-->
+<!--                           style="cursor: pointer;">-->
+<!--                            {{ item.name }}-->
+<!--                        </a>-->
+<!--                        {% endwith %}-->
+<!--                        <ul class="dropdown-menu" aria-labelledby="dropdown{{ forloop.counter }}">-->
+<!--                            {% for child in item.children.all %}-->
+<!--                            {% if child.url_name and child.slug %}-->
+<!--                            {% with clean_child_slug=child.slug|cut:'/' %}-->
+<!--                            <li><a class="dropdown-item" href="{% url child.url_name slug=clean_child_slug %}">{{-->
+<!--                                child.title }}</a></li>-->
+<!--                            {% endwith %}-->
+<!--                            {% else %}-->
+<!--                            <li><span class="dropdown-item">{{ child.title }}</span></li>-->
+<!--                            {% endif %}-->
+<!--                            {% endfor %}-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                    {% else %}-->
+<!--                    &lt;!&ndash; Без підменю &ndash;&gt;-->
+<!--                    {% with clean_slug=item.slug|cut:'/' %}-->
+<!--                    {% if item.url_name and item.slug %}-->
+<!--                    <a class="nav-link" href="{% if item.url_name and item.slug %}{% url item.url_name slug=clean_slug %}{% else %}#{% endif %}" style="cursor: pointer;">{{ item.name }}</a>-->
+<!--                    {% else %}-->
+<!--                    <span style="cursor: pointer;">{{ item.name }}</span>-->
+<!--                    {% endif %}-->
+<!--                    {% endwith %}-->
+<!--                    {% endif %}-->
+<!--                    {% endfor %}-->
+
                     {% for item in menu_items %}
-                    {% if item.children and item.children.all %}
+                    {% if item.children %}
                     <!-- Пункт з підменю -->
                     <div class="dropdown">
                         {% with clean_slug=item.slug|cut:'/' %}
@@ -109,11 +148,10 @@
                         </a>
                         {% endwith %}
                         <ul class="dropdown-menu" aria-labelledby="dropdown{{ forloop.counter }}">
-                            {% for child in item.children.all %}
+                            {% for child in item.children %}
                             {% if child.url_name and child.slug %}
                             {% with clean_child_slug=child.slug|cut:'/' %}
-                            <li><a class="dropdown-item" href="{% url child.url_name slug=clean_child_slug %}">{{
-                                child.title }}</a></li>
+                            <li><a class="dropdown-item" href="{% url child.url_name slug=clean_child_slug %}">{{ child.title }}</a></li>
                             {% endwith %}
                             {% else %}
                             <li><span class="dropdown-item">{{ child.title }}</span></li>
@@ -132,6 +170,8 @@
                     {% endwith %}
                     {% endif %}
                     {% endfor %}
+
+
                 </nav>
 
                 <!-- Зміна мови -->
@@ -170,6 +210,19 @@
         </div>
 
         <!-- Блок 2: Пункты меню (окрім "О кинотеатре") -->
+        <ul class="list-unstyled">
+            {% for item in menu_items %}
+            {% with clean_slug=item.slug|cut:'/' %}
+            {% if item.url_name and item.slug %}
+            <li><a class="nav-link"
+                   href="{% if item.url_name and item.slug %}{% url item.url_name slug=clean_slug %}{% else %}#{% endif %}"
+                   style="cursor: pointer;">{{ item.name }}</a></li>
+            {% else %}
+            <span style="cursor: pointer;">{{ item.name }}</span>
+            {% endif %}
+            {% endwith %}
+            {% endfor %}
+        </ul>
 
 
         <!-- Блок 3: "О кинотеатре" -->

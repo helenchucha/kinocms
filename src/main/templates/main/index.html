@@ -1,4 +1,7 @@
 {% extends 'main/layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load i18n %}
 
 {% block title %}Главная{% endblock %}
 
@@ -30,9 +33,9 @@
 </section>
 
 <!-- Сео текст -->
-<section class="section mb-4">
-    <h2>Сео текст</h2>
-    <p>Оптимізація для пошукових систем...</p>
+<section class="section mb-4 seo-section">
+    <h2 class="section-title">{% trans "Сео текст" %}</h2>
+    <p class="section-text">{{ seo.seo_text_ru }}</p>
 </section>
 
 {% endblock %}
